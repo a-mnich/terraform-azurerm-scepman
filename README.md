@@ -96,6 +96,17 @@ module "scepman" {
 }
 ```
 
+To re-use an existing Log Analytics Workspace that lives in another subscription, provide its identifiers via `law_cross_subscription_details`:
+
+```hcl
+  law_cross_subscription_details = {
+    id           = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-monitoring/providers/Microsoft.OperationalInsights/workspaces/law-central"
+    workspace_id = "00000000-0000-0000-0000-000000000000"
+    shared_key   = "redacted-primary-shared-key"
+  }
+```
+When you supply `law_cross_subscription_details`, omit both `law_name` and `law_resource_group_name`.
+
 ## Inputs
 
 | Name                                                                                                                                                | Description                                                               | Type          | Default                                                                                               | Required |
@@ -108,8 +119,9 @@ module "scepman" {
 | <a name="input_app_settings_primary"></a> [app\_settings\_primary](#input\_app\_settings\_primary)                                                  | A mapping of app settings to assign to the primary app service            | `map(string)` | `{}`                                                                                                  |    no    |
 | <a name="input_artifacts_url_primary"></a> [artifacts\_url\_primary](#input\_artifacts\_url\_primary)                                               | URL to the artifacts of the primary SCEPman Service                       | `string`      | `"https://raw.githubusercontent.com/scepman/install/master/dist/Artifacts.zip"`                       |    no    |
 | <a name="input_artifacts_url_certificate_master"></a> [artifacts\_url\_certificate\_master](#input\_artifacts\_url\_certificate\_master)            | URL to the artifacts of the SCEPman certificate master                    | `string`      | `"https://raw.githubusercontent.com/scepman/install/master/dist-certmaster/CertMaster-Artifacts.zip"` |    no    |
-| <a name="input_law_name"></a> [law\_name](#input\_law\_name)                                                                                        | Name of the Log Analytics Workspace                                       | `string`      | n/a                                                                                                   |   yes    |
+| <a name="input_law_name"></a> [law\_name](#input\_law\_name)                                                                                        | Name of the Log Analytics Workspace (required unless `law_cross_subscription_details` is provided) | `string`      | `null`                                                                                                |    no    |
 | <a name="input_law_resource_group"></a> [law\_resource\_group](#input\_law\_resource\_group)                                                        | Resource Group of existing Log Analytics Workspace                        | `string`      | `null`                                                                                                |    no    |
+| <a name="input_law_cross_subscription_details"></a> [law\_cross\_subscription\_details](#input\_law\_cross\_subscription\_details)                  | Details for an existing Log Analytics Workspace located in another subscription | `object({ id = string, workspace_id = string, shared_key = string })` | `null` |    no    |
 | <a name="input_key_vault_name"></a> [key\_vault\_name](#input\_key\_vault\_name)                                                                    | Name of the key vault                                                     | `string`      | n/a                                                                                                   |   yes    |
 | <a name="input_vnet_name"></a> [vnet\_name](#input\_vnet\_name)                                                                                     | Name of VNET created for internal communication                           | `string`      | vnet-scepman                                                                                          |    no    |
 | <a name="input_vnet_address_space"></a> [vnet\_address\_space](#input\_vnet\_address\_space)                                                        | Address-Space of the VNET (needs to be /27 or larger)                                                 | `list(any)`   | ["10.158.200.0/24"]                                                                                   |    no    |
